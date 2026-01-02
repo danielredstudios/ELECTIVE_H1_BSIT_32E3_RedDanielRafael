@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026 New Year Resolutions Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            padding: 40px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        h1 {
+            color: #1a1a1a;
+            font-size: 2.2em;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .subtitle {
+            color: #6b7280;
+            font-size: 1em;
+            font-weight: 400;
+        }
+
+        .year-badge {
+            display: inline-block;
+            background: #1a1a1a;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-weight: 500;
+            margin-top: 12px;
+            font-size: 0.85em;
+            letter-spacing: 0.5px;
+        }
+
+        .api-config {
+            background: #f9fafb;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 32px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .api-config label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #374151;
+            font-size: 0.875em;
+        }
+
+        .api-config input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+            font-family: 'Courier New', monospace;
+        }
+
+        .api-config input:focus {
+            outline: none;
+            border-color: #1a1a1a;
+        }
+
+        .add-section {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 32px;
+        }
+
+        .add-section input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: border-color 0.2s;
+        }
+
+        .add-section input:focus {
+            outline: none;
+            border-color: #1a1a1a;
+        }
+
+        .add-section button {
+            padding: 12px 24px;
+            background: #1a1a1a;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 500;
+            transition: opacity 0.2s;
+            white-space: nowrap;
+        }
+
+        .add-section button:hover {
+            opacity: 0.85;
+        }
+
+        .filters {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
+        }
+
+        .filters input {
+            flex: 1;
+            min-width: 200px;
+            padding: 10px 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .filters input:focus {
+            outline: none;
+            border-color: #1a1a1a;
+        }
+
+        .filters select {
+            padding: 10px 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            background: white;
+            transition: border-color 0.2s;
+        }
+
+        .filters select:focus {
+            outline: none;
+            border-color: #1a1a1a;
+        }
+
+        .filters button {
+            padding: 10px 20px;
+            background: #6b7280;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: opacity 0.2s;
+        }
+
+        .filters button:hover {
+            opacity: 0.85;
+        }
+
+        .btn-refresh {
+            padding: 10px 20px;
+            background: #1a1a1a;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: opacity 0.2s;
+        }
+
+        .btn-refresh:hover {
+            opacity: 0.85;
+        }
+
+        .stats {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            flex: 1;
+            min-width: 150px;
+            background: #f9fafb;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #e5e7eb;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            color: #6b7280;
+            font-size: 0.875em;
+            font-weight: 400;
+        }
+
+        .todo-list {
+            list-style: none;
+        }
+
+        .todo-item {
+            background: white;
+            padding: 16px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: 1px solid #e5e7eb;
+        }
+
+        .todo-item:hover {
+            border-color: #1a1a1a;
+        }
+
+        .todo-item.done {
+            background: #f9fafb;
+            opacity: 0.7;
+        }
+
+        .todo-checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #1a1a1a;
+        }
+
+        .todo-text {
+            flex: 1;
+            font-size: 15px;
+            color: #1a1a1a;
+            font-weight: 400;
+        }
+
+        .todo-item.done .todo-text {
+            text-decoration: line-through;
+            color: #9ca3af;
+        }
+
+        .todo-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-edit,
+        .btn-delete {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: opacity 0.2s;
+        }
+
+        .btn-edit {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            opacity: 0.85;
+        }
+
+        .btn-delete {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            opacity: 0.85;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #9ca3af;
+        }
+
+        .empty-state-icon {
+            font-size: 3em;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            color: #6b7280;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .error-message {
+            background: #fef2f2;
+            color: #991b1b;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 3px solid #dc2626;
+            font-size: 14px;
+        }
+
+        .success-message {
+            background: #f0fdf4;
+            color: #166534;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 3px solid #16a34a;
+            font-size: 14px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 32px;
+            border-radius: 12px;
+            max-width: 480px;
+            width: 90%;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .modal-content h2 {
+            margin-bottom: 24px;
+            color: #1a1a1a;
+            font-size: 1.5em;
+            font-weight: 600;
+        }
+
+        .modal-content .detail-row {
+            margin-bottom: 16px;
+        }
+
+        .modal-content .detail-label {
+            font-weight: 500;
+            color: #6b7280;
+            margin-bottom: 4px;
+            font-size: 0.875em;
+        }
+
+        .modal-content .detail-value {
+            color: #1a1a1a;
+            padding: 10px 14px;
+            background: #f9fafb;
+            border-radius: 6px;
+            font-size: 0.95em;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 24px;
+        }
+
+        .modal-actions button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 500;
+            transition: opacity 0.2s;
+        }
+
+        .btn-close {
+            background: #6b7280;
+            color: white;
+        }
+
+        .btn-close:hover {
+            opacity: 0.85;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px 20px;
+            color: #9ca3af;
+            font-size: 14px;
+        }
+
+        .footer {
+            margin-top: 48px;
+            padding-top: 24px;
+            border-top: 1px solid #e5e7eb;
+            text-align: center;
+            color: #9ca3af;
+            font-size: 0.875em;
+        }
+
+        .footer strong {
+            color: #374151;
+            font-weight: 500;
+        }
+
+        .footer .solution-name {
+            display: block;
+            margin-top: 6px;
+            color: #d1d5db;
+            font-size: 0.8em;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 20px 12px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .container {
+                padding: 28px 20px;
+            }
+
+            .add-section {
+                flex-direction: column;
+            }
+
+            .add-section button {
+                width: 100%;
+            }
+
+            .todo-item {
+                flex-wrap: wrap;
+            }
+
+            .todo-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+
+            .stats {
+                gap: 8px;
+            }
+
+            .stat-card {
+                min-width: 100px;
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 New Year Resolutions</h1>
+            <p class="subtitle">Track your goals and make 2026 your best year yet!</p>
+            <span class="year-badge">2026 EDITION</span>
+        </div>
+
+        <div class="api-config">
+            <label for="apiUrl">API Configuration:</label>
+            <input type="text" id="apiUrl" value="http://localhost:5275" placeholder="http://localhost:5275">
+        </div>
+
+        <div id="messageContainer"></div>
+
+        <div class="stats" id="statsContainer">
+            <div class="stat-card">
+                <div class="stat-number" id="totalCount">0</div>
+                <div class="stat-label">Total</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="activeCount">0</div>
+                <div class="stat-label">Active</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="completedCount">0</div>
+                <div class="stat-label">Completed</div>
+            </div>
+        </div>
+
+        <div class="add-section">
+            <input type="text" id="newTodoInput" placeholder="What's your resolution for 2026?" maxlength="100" />
+            <button onclick="addTodo()">Add Resolution</button>
+        </div>
+
+        <div class="filters">
+            <input type="text" id="searchInput" placeholder="Search resolutions..." />
+            <select id="filterStatus">
+                <option value="">All Resolutions</option>
+                <option value="false">Active Only</option>
+                <option value="true">Completed Only</option>
+            </select>
+            <button onclick="loadTodos()">Apply Filters</button>
+            <button class="btn-refresh" onclick="refreshConnection()">🔄 Refresh</button>
+        </div>
+
+        <ul id="todoList" class="todo-list">
+            <li class="loading">Loading resolutions...</li>
+        </ul>
+
+        <div class="footer">
+            <p><strong>DANIEL RED</strong> | New Year Resolutions Tracker 2026</p>
+            <span class="solution-name">ELECTIVE_H1_BSIT_32E3_RedDanielRafael</span>
+        </div>
+    </div>
+
+    <div id="detailModal" class="modal">
+        <div class="modal-content">
+            <h2>Resolution Details</h2>
+            <div class="detail-row">
+                <div class="detail-label">ID</div>
+                <div class="detail-value" id="detailId"></div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Title</div>
+                <div class="detail-value" id="detailTitle"></div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Status</div>
+                <div class="detail-value" id="detailStatus"></div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Created</div>
+                <div class="detail-value" id="detailCreatedAt"></div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Last Updated</div>
+                <div class="detail-value" id="detailUpdatedAt"></div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-close" onclick="closeDetailModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = () => document.getElementById('apiUrl').value || 'http://localhost:5275';
+        const API_ENDPOINT = () => `${API_BASE()}/api/resolutions`;
+
+        let allResolutions = [];
+
+        function showMessage(message, type = 'error') {
+            const container = document.getElementById('messageContainer');
+            container.innerHTML = `<div class="${type}-message">${message}</div>`;
+            setTimeout(() => {
+                container.innerHTML = '';
+            }, 5000);
+        }
+
+        function updateStats() {
+            const total = allResolutions.length;
+            const completed = allResolutions.filter(r => r.isDone).length;
+            const active = total - completed;
+
+            document.getElementById('totalCount').textContent = total;
+            document.getElementById('activeCount').textContent = active;
+            document.getElementById('completedCount').textContent = completed;
+        }
+
+        async function loadTodos() {
+            const search = document.getElementById('searchInput').value.trim();
+            const isDone = document.getElementById('filterStatus').value;
+
+            let url = API_ENDPOINT();
+            const params = new URLSearchParams();
+
+            if (search) params.append('title', search);
+            if (isDone !== '') params.append('isDone', isDone);
+
+            if (params.toString()) {
+                url += '?' + params.toString();
+            }
+
+            try {
+                const response = await fetch(url);
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    showMessage(`Error: ${errorData.message || 'Failed to load resolutions'}`, 'error');
+                    return;
+                }
+
+                const data = await response.json();
+                allResolutions = data.items || [];
+                renderTodos(allResolutions);
+                updateStats();
+            } catch (error) {
+                console.error('Fetch error:', error);
+                showMessage(`Cannot connect to API. Make sure the API is running at ${API_BASE()}`, 'error');
+                document.getElementById('todoList').innerHTML = `
+                    <li class="empty-state">
+                        <div class="empty-state-icon">⚠️</div>
+                        <h3>Cannot Connect to API</h3>
+                        <p>Make sure start-api.bat is running and the API URL is correct.</p>
+                        <p style="margin-top: 15px;"><strong>Current URL:</strong> ${API_BASE()}</p>
+                    </li>
+                `;
+            }
+        }
+
+        function renderTodos(todos) {
+            const list = document.getElementById('todoList');
+
+            if (todos.length === 0) {
+                list.innerHTML = `
+                    <li class="empty-state">
+                        <div class="empty-state-icon">📝</div>
+                        <h3>No resolutions yet</h3>
+                        <p>Add your first resolution above to get started!</p>
+                    </li>
+                `;
+                return;
+            }
+
+            list.innerHTML = todos.map(todo => `
+                <li class="todo-item ${todo.isDone ? 'done' : ''}" onclick="showDetails(${todo.id})">
+                    <input 
+                        type="checkbox" 
+                        class="todo-checkbox" 
+                        ${todo.isDone ? 'checked' : ''} 
+                        onclick="event.stopPropagation(); toggleTodo(${todo.id}, ${!todo.isDone})"
+                    />
+                    <span class="todo-text">${escapeHtml(todo.title)}</span>
+                    <div class="todo-actions">
+                        <button class="btn-edit" onclick="event.stopPropagation(); editTodo(${todo.id}, '${escapeHtml(todo.title).replace(/'/g, "\\'")}', ${todo.isDone})">Edit</button>
+                        <button class="btn-delete" onclick="event.stopPropagation(); deleteTodo(${todo.id})">Delete</button>
+                    </div>
+                </li>
+            `).join('');
+        }
+
+        async function addTodo() {
+            const input = document.getElementById('newTodoInput');
+            const title = input.value.trim();
+
+            if (!title) {
+                showMessage('Please enter a resolution title', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(API_ENDPOINT(), {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ title })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    showMessage(`Error: ${errorData.message || 'Failed to add resolution'}`, 'error');
+                    return;
+                }
+
+                input.value = '';
+                showMessage('Resolution added successfully!', 'success');
+                loadTodos();
+            } catch (error) {
+                showMessage(`Failed to add resolution: ${error.message}`, 'error');
+            }
+        }
+
+        async function toggleTodo(id, isDone) {
+            try {
+                const getResponse = await fetch(`${API_ENDPOINT()}/${id}`);
+                if (!getResponse.ok) {
+                    showMessage('Failed to get resolution details', 'error');
+                    return;
+                }
+
+                const todo = await getResponse.json();
+
+                const response = await fetch(`${API_ENDPOINT()}/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        id: id,
+                        title: todo.title,
+                        isDone: isDone
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    showMessage(`Error: ${errorData.message || 'Failed to update resolution'}`, 'error');
+                    return;
+                }
+
+                showMessage('Resolution updated!', 'success');
+                loadTodos();
+            } catch (error) {
+                showMessage(`Failed to toggle resolution: ${error.message}`, 'error');
+            }
+        }
+
+        async function editTodo(id, currentTitle, isDone) {
+            const newTitle = prompt('Edit resolution:', currentTitle);
+            if (newTitle === null || newTitle.trim() === '') return;
+
+            try {
+                const response = await fetch(`${API_ENDPOINT()}/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        id: id,
+                        title: newTitle.trim(),
+                        isDone: isDone
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    showMessage(`Error: ${errorData.message || 'Failed to update resolution'}`, 'error');
+                    return;
+                }
+
+                showMessage('Resolution updated!', 'success');
+                loadTodos();
+            } catch (error) {
+                showMessage(`Failed to edit resolution: ${error.message}`, 'error');
+            }
+        }
+
+        async function deleteTodo(id) {
+            if (!confirm('Are you sure you want to delete this resolution?')) return;
+
+            try {
+                const response = await fetch(`${API_ENDPOINT()}/${id}`, {
+                    method: 'DELETE'
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    showMessage(`Error: ${errorData.message || 'Failed to delete resolution'}`, 'error');
+                    return;
+                }
+
+                showMessage('Resolution deleted!', 'success');
+                loadTodos();
+            } catch (error) {
+                showMessage(`Failed to delete resolution: ${error.message}`, 'error');
+            }
+        }
+
+        async function showDetails(id) {
+            try {
+                const response = await fetch(`${API_ENDPOINT()}/${id}`);
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    showMessage(`Error: ${errorData.message || 'Failed to get resolution details'}`, 'error');
+                    return;
+                }
+
+                const todo = await response.json();
+
+                document.getElementById('detailId').textContent = todo.id;
+                document.getElementById('detailTitle').textContent = todo.title;
+                document.getElementById('detailStatus').textContent = todo.isDone ? '✅ Completed' : '🎯 Active';
+                document.getElementById('detailCreatedAt').textContent = new Date(todo.createdAt).toLocaleString();
+                document.getElementById('detailUpdatedAt').textContent = todo.updatedAt ? new Date(todo.updatedAt).toLocaleString() : 'Not updated';
+
+                document.getElementById('detailModal').classList.add('active');
+            } catch (error) {
+                showMessage(`Failed to get details: ${error.message}`, 'error');
+            }
+        }
+
+        function closeDetailModal() {
+            document.getElementById('detailModal').classList.remove('active');
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function refreshConnection() {
+            showMessage('Reconnecting to API...', 'success');
+            document.getElementById('searchInput').value = '';
+            document.getElementById('filterStatus').value = '';
+            loadTodos();
+        }
+
+        document.getElementById('newTodoInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') addTodo();
+        });
+
+        document.getElementById('searchInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') loadTodos();
+        });
+
+        document.getElementById('detailModal').addEventListener('click', (e) => {
+            if (e.target.id === 'detailModal') closeDetailModal();
+        });
+
+        loadTodos();
+    </script>
+</body>
+</html>

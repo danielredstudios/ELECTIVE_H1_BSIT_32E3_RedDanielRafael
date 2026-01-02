@@ -1,0 +1,128 @@
+### New Year Resolutions API Tests
+### Base URL - Using HTTP to avoid SSL certificate issues
+@baseUrl = http://localhost:5275
+@apiUrl = {{baseUrl}}/api/resolutions
+
+### 1. Get All Resolutions
+GET {{apiUrl}}
+
+### 2. Get All Resolutions - Filter by isDone=false (Active)
+GET {{apiUrl}}?isDone=false
+
+### 3. Get All Resolutions - Filter by isDone=true (Completed)
+GET {{apiUrl}}?isDone=true
+
+### 4. Get All Resolutions - Search by title
+GET {{apiUrl}}?title=walk
+
+### 5. Get All Resolutions - Combined filter (isDone + title search)
+GET {{apiUrl}}?isDone=false&title=read
+
+### 6. Get All Resolutions - Invalid isDone value (should return 400)
+GET {{apiUrl}}?isDone=invalid
+
+### 7. Get Resolution by ID (valid)
+GET {{apiUrl}}/1
+
+### 8. Get Resolution by ID (invalid - id <= 0, should return 400)
+GET {{apiUrl}}/0
+
+### 9. Get Resolution by ID (not found - should return 404)
+GET {{apiUrl}}/999
+
+### 10. Create New Resolution (valid)
+POST {{apiUrl}}
+Content-Type: application/json
+
+{
+  "title": "Exercise 30 minutes daily"
+}
+
+### 11. Create New Resolution - Empty title (should return 400)
+POST {{apiUrl}}
+Content-Type: application/json
+
+{
+  "title": ""
+}
+
+### 12. Create New Resolution - Whitespace title (should return 400)
+POST {{apiUrl}}
+Content-Type: application/json
+
+{
+  "title": "   "
+}
+
+### 13. Create New Resolution - Missing body (should return 400)
+POST {{apiUrl}}
+Content-Type: application/json
+
+### 14. Update Resolution (valid)
+PUT {{apiUrl}}/1
+Content-Type: application/json
+
+{
+  "id": 1,
+  "title": "Walk 30 minutes daily",
+  "isDone": true
+}
+
+### 15. Update Resolution - ID mismatch (should return 400)
+PUT {{apiUrl}}/1
+Content-Type: application/json
+
+{
+  "id": 2,
+  "title": "Walk 30 minutes daily",
+  "isDone": true
+}
+
+### 16. Update Resolution - Invalid route ID (should return 400)
+PUT {{apiUrl}}/0
+Content-Type: application/json
+
+{
+  "id": 0,
+  "title": "Walk 30 minutes daily",
+  "isDone": true
+}
+
+### 17. Update Resolution - Empty title (should return 400)
+PUT {{apiUrl}}/1
+Content-Type: application/json
+
+{
+  "id": 1,
+  "title": "",
+  "isDone": true
+}
+
+### 18. Update Resolution - Not found (should return 404)
+PUT {{apiUrl}}/999
+Content-Type: application/json
+
+{
+  "id": 999,
+  "title": "Test",
+  "isDone": true
+}
+
+### 19. Delete Resolution (valid)
+DELETE {{apiUrl}}/2
+
+### 20. Delete Resolution - Invalid ID (should return 400)
+DELETE {{apiUrl}}/0
+
+### 21. Delete Resolution - Not found (should return 404)
+DELETE {{apiUrl}}/999
+
+###
+### Legacy Weather Forecast endpoint
+###
+@ELECTIVE_H1_BSIT_32E3_RedDanielRafael_HostAddress = http://localhost:5275
+
+GET {{ELECTIVE_H1_BSIT_32E3_RedDanielRafael_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
